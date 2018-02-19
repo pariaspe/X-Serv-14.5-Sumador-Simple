@@ -25,23 +25,28 @@ try:
         print(request)
         resource = request.split()[1]
         print(resource)
-        _, num1, operacion, num2 = resource.split('/')
-        print('Answering back...')
+        param = resource.split('/')
+        if len(param) != calculadora.NUM_ARGS:
+            html_answer = '<html><body><h1>Bienvenido a la calculadora web.</h1>'
+            html_answer += '<p>Usage error</p></body>'
+        else:
+            _, num1, operacion, num2 = resource.split('/')
+            print('Answering back...')
 
-        # Building Answer
-        try:
-            op = num1 + " " + operacion + " " + num2 + " = "
-            op += str(calculadora.operations[operacion](int(num1), int(num2)))
-        except KeyError:
-            op = "Operacion no permitida(" + operacion + ")"
-        except ZeroDivisionError:
-            op = "No se puede dividir entre zero."
-        except:
-            op = "Error"
+            # Building Answer
+            try:
+                op = num1 + " " + operacion + " " + num2 + " = "
+                op += str(calculadora.operations[operacion](int(num1), int(num2)))
+            except KeyError:
+                op = "Operacion no permitida(" + operacion + ")"
+            except ZeroDivisionError:
+                op = "No se puede dividir entre zero."
+            except:
+                op = "Error"
 
-        html_answer = '<html><body><h1>Bienvenido a la calculadora web.</h1>'
-        html_answer += '<p>La operacion a realizar es:\r\t' + op
-        html_answer += '</p></body>'
+            html_answer = '<html><body><h1>Bienvenido a la calculadora web.</h1>'
+            html_answer += '<p>La operacion a realizar es:\r\t' + op
+            html_answer += '</p></body>'
 
         # Answering
         recvSocket.send(bytes("HTTP/1.1 200 OK\r\n\r\n" +
