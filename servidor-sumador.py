@@ -13,10 +13,11 @@ import calculadora
 def analize(request):
     resource = request.split()[1]
     print(resource)
-    _, num1, operacion, num2 = resource.split('/')
-    return num1, operacion, num2
+    param = resource.split('/')
+    return param
 
-def compute(num1, operacion, num2):
+def compute(param):
+    _, num1, operacion, num2 = param
     op = num1 + " " + operacion + " " + num2 + " = "
     op += str(calculadora.operations[operacion](int(num1), int(num2)))
     return op
@@ -42,49 +43,23 @@ try:
         print('Request received:')
         request = str(recvSocket.recv(1024), 'utf-8')
         print(request)
-<<<<<<< HEAD
 
-        num1, operacion, num2 = analize(request)
-        print('Answering back...')
+        param = analize(request)
 
-        # Building Answer
-        try:
-            op = compute(num1, operacion, num2)
-        except KeyError:
-            op = "Operacion no permitida(" + operacion + ")"
-        except ZeroDivisionError:
-            op = "No se puede dividir entre zero."
-        except:
-            op = "Error"
-
-        answer = build_answer(op)
-=======
-        resource = request.split()[1]
-        print(resource)
-        param = resource.split('/')
         if len(param) != calculadora.NUM_ARGS:
-            html_answer = '<html><body><h1>Bienvenido a la calculadora web.</h1>'
-            html_answer += '<p>Usage error</p></body>'
+            op = 'Usage error'
         else:
-            _, num1, operacion, num2 = resource.split('/')
-            print('Answering back...')
-
-            # Building Answer
             try:
-                op = num1 + " " + operacion + " " + num2 + " = "
-                op += str(calculadora.operations[operacion](int(num1), int(num2)))
+                op = compute(param)
             except KeyError:
-                op = "Operacion no permitida(" + operacion + ")"
+                op = "Operacion no permitida"
             except ZeroDivisionError:
                 op = "No se puede dividir entre zero."
             except:
                 op = "Error"
 
-            html_answer = '<html><body><h1>Bienvenido a la calculadora web.</h1>'
-            html_answer += '<p>La operacion a realizar es:\r\t' + op
-            html_answer += '</p></body>'
+        answer = build_answer(op)
 
->>>>>>> c7ea541790880b38aa6c2e05b86d60f051adb5fe
         # Answering
         recvSocket.send(bytes(answer, 'utf-8'))
         recvSocket.close()
